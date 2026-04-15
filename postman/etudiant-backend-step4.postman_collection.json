@@ -1,0 +1,189 @@
+{
+  "info": {
+    "_postman_id": "7d32fdf2-25ad-4d2d-9e6f-bf4d0b9e9c11",
+    "name": "Etudiant Backend - Step4 JWT + Students",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "login", "value": "agent1" },
+    { "key": "password", "value": "agent123" },
+    { "key": "token", "value": "" },
+    { "key": "studentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1 - Register user (si besoin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Agent\",\n  \"lastName\": \"Bibli\",\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2 - Login (récupère token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const token = pm.response.text();",
+              "pm.collectionVariables.set('token', token);"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "3 - List students",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "students"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4 - Create student",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Durand\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/students",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "students"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const body = pm.response.json();",
+              "if (body && body.id) {",
+              "  pm.collectionVariables.set('studentId', body.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "5 - Get student by id",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/{{studentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "students", "{{studentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6 - Update student",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Alice-Updated\",\n  \"lastName\": \"Durand-Updated\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/students/{{studentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "students", "{{studentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7 - Delete student",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/{{studentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "students", "{{studentId}}"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
