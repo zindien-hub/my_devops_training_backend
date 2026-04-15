@@ -118,14 +118,28 @@ mvn clean test
 ## Fonctionnalités portées
 
     - API de création d'un utilisateur (agent de la bibliothèque)
-    - API d'authentification d'un utilisateur (à faire)
-    - APIs CRUD des étudiants de la bibliothèque (à faire)
+    - API d'authentification d'un utilisateur (JWT)
+    - APIs CRUD des étudiants de la bibliothèque
 
 
-## Écrans ou blocs concernés
-    - Ecran xxx
-    - Ecran xxx
-    - Ecran xxx
+## Endpoints disponibles
+
+### Authentification
+    - POST /api/register
+    - POST /api/login
+
+### Students (authentification JWT requise)
+    - GET /api/students
+    - GET /api/students/{id}
+    - POST /api/students
+    - PUT /api/students/{id}
+    - DELETE /api/students/{id}
+
+## Tests API manuels (Postman)
+
+Une collection Postman est disponible pour valider le flux complet :
+
+    - postman/etudiant-backend-step4.postman_collection.json
 
 
 
