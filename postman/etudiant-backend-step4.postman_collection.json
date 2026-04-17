@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "7d32fdf2-25ad-4d2d-9e6f-bf4d0b9e9c11",
-    "name": "Etudiant Backend - Step4 JWT + Students",
+    "name": "Etudiant Backend - Auth JWT + Students CRUD",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "event": [
@@ -29,7 +29,7 @@
   ],
   "item": [
     {
-      "name": "1 - Register user (si besoin)",
+      "name": "1 - Register user (if needed)",
       "request": {
         "method": "POST",
         "header": [
@@ -48,7 +48,7 @@
       "response": []
     },
     {
-      "name": "2 - Login (récupère token)",
+      "name": "2 - Login (get JWT token)",
       "request": {
         "method": "POST",
         "header": [
@@ -74,8 +74,13 @@
               "    pm.response.to.have.status(200);",
               "});",
               "",
-              "const token = pm.response.text();",
-              "pm.collectionVariables.set('token', token);"
+              "const body = pm.response.json();",
+              "",
+              "pm.test('Token is returned', function () {",
+              "    pm.expect(body.token).to.exist;",
+              "});",
+              "",
+              "pm.collectionVariables.set('token', body.token);"
             ]
           }
         }
@@ -95,6 +100,19 @@
           "path": ["api", "students"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -126,8 +144,13 @@
               "});",
               "",
               "const body = pm.response.json();",
+              "",
+              "pm.test('Student id is returned', function () {",
+              "    pm.expect(body.id).to.exist;",
+              "});",
+              "",
               "if (body && body.id) {",
-              "  pm.collectionVariables.set('studentId', body.id);",
+              "    pm.collectionVariables.set('studentId', body.id);",
               "}"
             ]
           }
@@ -148,6 +171,19 @@
           "path": ["api", "students", "{{studentId}}"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -168,6 +204,19 @@
           "path": ["api", "students", "{{studentId}}"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -183,6 +232,19 @@
           "path": ["api", "students", "{{studentId}}"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 204', function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     }
   ]
