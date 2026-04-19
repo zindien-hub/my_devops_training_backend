@@ -24,10 +24,16 @@ public class UserServiceTest {
     private static final String LAST_NAME = "Doe";
     private static final String LOGIN = "LOGIN";
     private static final String PASSWORD = "PASSWORD";
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private UserService userService;
 
@@ -48,6 +54,7 @@ public class UserServiceTest {
         user.setLastName(LAST_NAME);
         user.setLogin(LOGIN);
         user.setPassword(PASSWORD);
+
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
         when(userRepository.findByLogin(any())).thenReturn(Optional.of(user));
 
@@ -64,6 +71,7 @@ public class UserServiceTest {
         user.setLastName(LAST_NAME);
         user.setLogin(LOGIN);
         user.setPassword(PASSWORD);
+
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
         when(userRepository.findByLogin(any())).thenReturn(Optional.empty());
 
@@ -74,5 +82,25 @@ public class UserServiceTest {
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
         assertThat(userCaptor.getValue()).isEqualTo(user);
+    }
+
+    @Test
+    public void test_login_user_returns_jwt_token() {
+        // GIVEN
+        User user = new User();
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setLogin(LOGIN);
+        user.setPassword("ENCODED_PASSWORD");
+
+        when(userRepository.findByLogin(LOGIN)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(PASSWORD, "ENCODED_PASSWORD")).thenReturn(true);
+        when(jwtService.generateToken(any())).thenReturn("mocked-jwt-token");
+
+        // WHEN
+        String token = userService.login(LOGIN, PASSWORD);
+
+        // THEN
+        assertThat(token).isEqualTo("mocked-jwt-token");
     }
 }

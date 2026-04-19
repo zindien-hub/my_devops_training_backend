@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.openclassrooms.etudiant.dto.LoginRequestDTO;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 public class UserControllerTest {
 
     private static final String URL = "/api/register";
+    private static final String LOGIN_URL = "/api/login";
     private static final String FIRST_NAME = "John";
     private static final String LAST_NAME = "Doe";
     private static final String LOGIN = "login";
@@ -35,7 +37,7 @@ public class UserControllerTest {
 
 
     @Container
-    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0");
 
     @Autowired
     private UserService userService;
@@ -52,6 +54,8 @@ public class UserControllerTest {
         registry.add("spring.datasource.username", () -> mySQLContainer.getUsername());
         registry.add("spring.datasource.password", () -> mySQLContainer.getPassword());
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
+        registry.add("jwt.secret", () -> "test-secret-key-at-least-32-characters-long");
+        registry.add("jwt.expiration-ms", () -> "3600000");
 
     }
 
@@ -115,5 +119,29 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    public void loginUserSuccessful() throws Exception {
+        // GIVEN
+        User user = new User();
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setLogin(LOGIN);
+        user.setPassword(PASSWORD);
+        userService.register(user);
+
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setLogin(LOGIN);
+        loginRequestDTO.setPassword(PASSWORD);
+
+        // WHEN / THEN
+        mockMvc.perform(MockMvcRequestBuilders.post(LOGIN_URL)
+                .content(objectMapper.writeValueAsString(loginRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token").isNotEmpty());
     }
 }
