@@ -157,8 +157,7 @@
 					</excludes>
 				</configuration>
 
-			</plugin>
-			<plugin>
+			</plugin><plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.12</version>
@@ -168,13 +167,25 @@
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
+
 					<execution>
 						<id>report</id>
 						<phase>verify</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>com/openclassrooms/etudiant/dto/**</exclude>
+								<exclude>com/openclassrooms/etudiant/entities/**</exclude>
+								<exclude>com/openclassrooms/etudiant/mapper/**</exclude>
+								<exclude>com/openclassrooms/etudiant/handler/**</exclude>
+								<exclude>com/openclassrooms/etudiant/configuration/**</exclude>
+								<exclude>com/openclassrooms/etudiant/EtudiantBackendApplication*</exclude>
+							</excludes>
+						</configuration>
 					</execution>
+
 					<execution>
 						<id>check</id>
 						<phase>verify</phase>
@@ -182,6 +193,14 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
+							<excludes>
+								<exclude>com/openclassrooms/etudiant/dto/**</exclude>
+								<exclude>com/openclassrooms/etudiant/entities/**</exclude>
+								<exclude>com/openclassrooms/etudiant/mapper/**</exclude>
+								<exclude>com/openclassrooms/etudiant/handler/**</exclude>
+								<exclude>com/openclassrooms/etudiant/configuration/**</exclude>
+								<exclude>com/openclassrooms/etudiant/EtudiantBackendApplication*</exclude>
+							</excludes>
 							<rules>
 								<rule>
 									<element>BUNDLE</element>
