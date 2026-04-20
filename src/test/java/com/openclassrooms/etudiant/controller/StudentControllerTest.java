@@ -68,6 +68,7 @@ public class StudentControllerTest {
 
     @DynamicPropertySource
     static void configureTestProperties(DynamicPropertyRegistry registry) {
+        // Connecte la datasource Spring au conteneur MySQL temporaire.
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
@@ -137,6 +138,7 @@ public class StudentControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        // Reutilise l'id cree pour verifier le endpoint GET par id.
         Long studentId = objectMapper.readTree(response).get("id").asLong();
 
         // WHEN / THEN
@@ -187,6 +189,7 @@ public class StudentControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        // Lit l'id depuis la creation pour tester la mise a jour d'un etudiant existant.
         Long studentId = objectMapper.readTree(createResponse).get("id").asLong();
 
         UpdateStudentDTO updateStudentDTO = new UpdateStudentDTO();
@@ -223,6 +226,7 @@ public class StudentControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        // Lit l'id depuis la creation pour que DELETE cible une entite persistante reelle.
         Long studentId = objectMapper.readTree(createResponse).get("id").asLong();
 
         // WHEN / THEN

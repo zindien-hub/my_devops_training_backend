@@ -17,11 +17,11 @@ class JwtServiceTest {
     void setUp() {
         jwtService = new JwtService();
 
-        // Inject test config values manually
+        // Injecte les champs de configuration car aucun contexte Spring n'est demarre ici.
         ReflectionTestUtils.setField(jwtService, "secretKey", "test-secret-key-at-least-32-characters-long");
         ReflectionTestUtils.setField(jwtService, "expirationTime", 3600000L);
 
-        // Trigger config validation
+        // Execute explicitement la garde type @PostConstruct pour echouer rapidement si la config est invalide.
         jwtService.validateJwtConfig();
 
         userDetails = User.builder()

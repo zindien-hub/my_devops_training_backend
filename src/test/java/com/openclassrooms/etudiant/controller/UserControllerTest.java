@@ -50,6 +50,7 @@ public class UserControllerTest {
 
     @DynamicPropertySource
     static void configureTestProperties(DynamicPropertyRegistry registry) {
+        // Execute les tests d'integration avec un conteneur MySQL jetable.
         registry.add("spring.datasource.url", () -> mySQLContainer.getJdbcUrl());
         registry.add("spring.datasource.username", () -> mySQLContainer.getUsername());
         registry.add("spring.datasource.password", () -> mySQLContainer.getPassword());
@@ -81,6 +82,7 @@ public class UserControllerTest {
     @Test
     public void registerAlreadyExistUser() throws Exception {
         // GIVEN
+        // Prepare un compte existant pour verifier le controle sur le login duplique.
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -124,6 +126,7 @@ public class UserControllerTest {
     @Test
     public void loginUserSuccessful() throws Exception {
         // GIVEN
+        // Persiste un utilisateur reel puis authentifie via le endpoint HTTP.
         User user = new User();
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
@@ -142,6 +145,7 @@ public class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                // Ici on valide seulement la presence du token, pas son contenu (teste dans JwtServiceTest).
                 .andExpect(MockMvcResultMatchers.jsonPath("$.token").isNotEmpty());
     }
 }
