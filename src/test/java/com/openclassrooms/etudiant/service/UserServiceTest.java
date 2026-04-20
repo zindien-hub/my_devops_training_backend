@@ -56,6 +56,7 @@ public class UserServiceTest {
         user.setPassword(PASSWORD);
 
         when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD);
+        // Simule une collision de login: ce login existe deja en base.
         when(userRepository.findByLogin(any())).thenReturn(Optional.of(user));
 
         // THEN
@@ -79,6 +80,7 @@ public class UserServiceTest {
         userService.register(user);
 
         // THEN
+        // Capture l'utilisateur sauvegarde pour verifier ce qui est transmis au repository.
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
         assertThat(userCaptor.getValue()).isEqualTo(user);

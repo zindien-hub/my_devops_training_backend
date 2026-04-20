@@ -90,6 +90,7 @@ public class StudentServiceTest {
         savedStudent.setCreatedAt(LocalDateTime.now());
         savedStudent.setUpdatedAt(LocalDateTime.now());
 
+        // Save retourne une entite avec metadonnees generees (id/horodatages).
         when(studentRepository.save(any(Student.class))).thenReturn(savedStudent);
 
         // WHEN
@@ -124,6 +125,7 @@ public class StudentServiceTest {
         updatedStudent.setUpdatedAt(LocalDateTime.now());
 
         when(studentRepository.findById(ID)).thenReturn(Optional.of(existingStudent));
+        // Le service modifie l'entite chargee avant de la sauvegarder.
         when(studentRepository.save(existingStudent)).thenReturn(updatedStudent);
 
         // WHEN
