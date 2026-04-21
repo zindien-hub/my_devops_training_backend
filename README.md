@@ -107,13 +107,24 @@ La capture d'écran ci-dessous résume les étapes précédentes :
 
 
 ## Exécution des tests
-Pour exécuter les tests Junit, il faut :
-- avoir démarré Docker-Desktop sur votre poste de travail local. Cette étape est nécessaire car les tests d'intégration auront besoin de Docker pour créer des bases de données temporaires de test.
-- dans une console, se placer à la racine du projet et exécuter la commande Maven suivante :
+### Lancer les tests
+1. Démarrer Docker sur votre machine (requis pour les tests d'intégration avec Testcontainers).
+2. Depuis la racine du projet, exécuter :
 
-```
+```bash
 mvn clean test
 ```
+
+### Tests ajoutés
+- Tests d'intégration des contrôleurs : `StudentControllerTest`, `UserControllerTest`.
+- Tests unitaires des services : `StudentServiceTest`, `UserServiceTest`, `JwtServiceTest`.
+
+### Résultat actuel
+- 5 classes de tests.
+- 21 tests exécutés.
+- 0 échec, 0 erreur.
+
+Les rapports sont disponibles dans `target/surefire-reports/` (résultats) et `target/site/jacoco/` (couverture).
 
 ## Fonctionnalités portées
 
