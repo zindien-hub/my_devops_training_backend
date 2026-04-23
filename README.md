@@ -114,17 +114,29 @@ La capture d'écran ci-dessous résume les étapes précédentes :
 ```bash
 mvn clean test
 ```
+### Tests implémentés
 
 ### Tests ajoutés
 - Tests d'intégration des contrôleurs : `StudentControllerTest`, `UserControllerTest`.
 - Tests unitaires des services : `StudentServiceTest`, `UserServiceTest`, `JwtServiceTest`.
 
-### Résultat actuel
+### Résultats des tests
 - 5 classes de tests.
-- 21 tests exécutés.
+- 31 tests exécutés.
 - 0 échec, 0 erreur.
 
 Les rapports sont disponibles dans `target/surefire-reports/` (résultats) et `target/site/jacoco/` (couverture).
+
+### Couverture mesurée
+
+La couverture du périmètre métier testé est supérieure à 80 % :
+- Instructions : 100 %
+- Branches : 88 %
+
+### Notes sur la couverture
+Le calcul JaCoCo est centré sur les classes métier testées :
+- services
+- controllers
 
 ## Fonctionnalités portées
 
