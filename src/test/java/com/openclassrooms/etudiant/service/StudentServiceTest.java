@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -150,5 +152,45 @@ public class StudentServiceTest {
         // THEN
         verify(studentRepository).existsById(ID);
         verify(studentRepository).deleteById(ID);
+    }
+
+    @Test
+    public void test_get_student_by_id_not_found_throws_runtime_exception() {
+        // GIVEN
+        when(studentRepository.findById(ID)).thenReturn(Optional.empty());
+
+        // WHEN / THEN
+        RuntimeException exception = assertThrows(RuntimeException.class,
+        () -> studentService.getStudentById(ID));
+
+        assertThat(exception.getMessage()).isEqualTo("Student not found");
+    }
+
+    @Test
+    public void test_update_student_not_found_throws_runtime_exception() {
+        // GIVEN
+        UpdateStudentDTO dto = new UpdateStudentDTO();
+        dto.setFirstName(UPDATED_FIRST_NAME);
+        dto.setLastName(UPDATED_LAST_NAME);
+
+        when(studentRepository.findById(ID)).thenReturn(Optional.empty());
+
+        // WHEN / THEN
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> studentService.updateStudent(ID, dto));
+
+        assertThat(exception.getMessage()).isEqualTo("Student not found");
+    }
+
+    @Test
+    public void test_delete_student_not_found_throws_runtime_exception() {
+        // GIVEN
+        when(studentRepository.existsById(ID)).thenReturn(false);
+
+        // WHEN / THEN
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> studentService.deleteStudent(ID));
+
+        assertThat(exception.getMessage()).isEqualTo("Student not found");
     }
 }

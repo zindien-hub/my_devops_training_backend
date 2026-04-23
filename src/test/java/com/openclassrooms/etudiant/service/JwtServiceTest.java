@@ -63,4 +63,51 @@ class JwtServiceTest {
         // Then
         assertTrue(valid);
     }
+
+    @Test
+    void shouldRejectBlankSecretKey() {
+        // GIVEN
+        JwtService invalidJwtService = new JwtService();
+        ReflectionTestUtils.setField(invalidJwtService, "secretKey", "");
+        ReflectionTestUtils.setField(invalidJwtService, "expirationTime", 3600000L);
+
+        // WHEN / THEN
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                invalidJwtService::validateJwtConfig);
+
+        assertEquals("JWT secret is missing. Define JWT_SECRET environment variable.", exception.getMessage());
+    }
+
+    @Test
+    void shouldRejectTooShortSecretKey() {
+        // GIVEN
+        JwtService invalidJwtService = new JwtService();
+        ReflectionTestUtils.setField(invalidJwtService, "secretKey", "short-secret-key");
+        ReflectionTestUtils.setField(invalidJwtService, "expirationTime", 3600000L);
+
+        // WHEN / THEN
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                invalidJwtService::validateJwtConfig);
+
+        assertEquals("JWT secret is too short. Use at least 32 characters.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnFalseWhenTokenBelongsToAnotherUser() {
+        // GIVEN
+        String token = jwtService.generateToken(userDetails);
+
+        UserDetails otherUser = User.builder()
+                .username("agent2")
+                .password("encoded-password")
+                .build();
+
+        // WHEN
+        boolean valid = jwtService.isTokenValid(token, otherUser);
+
+        // THEN
+        assertFalse(valid);
+    }
 }
